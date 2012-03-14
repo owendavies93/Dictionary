@@ -42,14 +42,14 @@ public class OrderedLinkedList<K extends Comparable<? super K>, V> implements
 
     private OrderedLinkedListEntry<K, V> getEntryAt(K key) {
         OrderedLinkedListEntry<K, V> curr = head;
-        int count = 0;
+        int count = 1;
 
         do {
             curr = curr.getNext();
             count++;
-        } while (curr.getKey() != key || count > size());
+        } while (curr.getKey() != key && count < size());
 
-        if (count > size()) {
+        if (count >= size() && curr.getKey() != key) {
             return null;
         } else {
             return curr;
@@ -84,7 +84,7 @@ public class OrderedLinkedList<K extends Comparable<? super K>, V> implements
         if (prev != null && prev.getKey().compareTo(searchKey) < 0) {
             OrderedLinkedListEntry<K, V> curr = prev.getNext();
 
-            while (curr != null && curr.getKey().compareTo(searchKey) <= 0) {
+            while (curr != null && curr.getKey().compareTo(searchKey) < 0) {
                 prev = curr;
                 curr = curr.getNext();
             }
@@ -136,7 +136,7 @@ public class OrderedLinkedList<K extends Comparable<? super K>, V> implements
 
         @Override
         public boolean hasNext() {
-            return curr.getNext() != null;
+            return curr != null;
         }
 
         @Override
@@ -144,16 +144,15 @@ public class OrderedLinkedList<K extends Comparable<? super K>, V> implements
             if (curr == null) {
                 return null;
             } else {
+                DictionaryEntry<K, V> res = curr;
                 curr = curr.getNext();
-                return curr;
+                return res;
             }
         }
 
         @Override
         public void remove() {
-            if (curr != null) {
-                OrderedLinkedList.this.remove(curr.getKey());
-            }
+            throw new UnsupportedOperationException();
         }
 
     }

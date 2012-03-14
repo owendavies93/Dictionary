@@ -14,6 +14,11 @@ public class Main {
         l.put(2, "hello");
         l.put(5, "hi");
         l.put(1, "boo");
-        System.out.println(l.size());
+        l.put(7, "aeg");
+        // l.remove(5);
+
+        for (DictionaryEntry<Integer, String> e : l) {
+            System.out.println(e);
+        }
     }
 }

@@ -33,4 +33,8 @@ public class OrderedLinkedListEntry<K, V> implements DictionaryEntry<K, V> {
     public void setNext(OrderedLinkedListEntry<K, V> next) {
         this.next = next;
     }
+
+    public String toString() {
+        return key + " -> " + value;
+    }
 }
