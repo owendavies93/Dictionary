@@ -33,6 +33,11 @@ public class BinarySearchTree<K extends Comparable<? super K>, V> implements
     }
 
     @Override
+    public BinarySearchTreeEntry<K, V> getRoot() {
+        return root;
+    }
+
+    @Override
     public boolean isEmpty() {
         return size() == 0;
     }
@@ -97,8 +102,13 @@ public class BinarySearchTree<K extends Comparable<? super K>, V> implements
             BinarySearchTreeEntry<K, V> node, K key) {
         if (node == null) {
             throw new NoSuchElementException("Key not found");
-        } else if (node.getKey() == key) {
-            node = deleteNode(node);
+        } else if (node.getKey().compareTo(key) == 0) {
+            if (node.equals(root)) {
+                root = deleteNode(node);
+            } else {
+                node = deleteNode(node);
+            }
+
             modCount++;
             numElems--;
         } else if (node.getKey().compareTo(key) > 0) {
@@ -149,6 +159,27 @@ public class BinarySearchTree<K extends Comparable<? super K>, V> implements
     }
 
     @Override
+    public void clear() {
+        deleteAll(root);
+    }
+
+    private void deleteAll(BinarySearchTreeEntry<K, V> node) {
+        if (node == null) {
+            return;
+        }
+
+        if (node.getLeft() != null) {
+            deleteAll(node.getLeft());
+        }
+
+        if (node.getRight() != null) {
+            deleteAll(node.getRight());
+        }
+
+        remove(node.getKey());
+    }
+
+    @Override
     public Iterator<DictionaryEntry<K, V>> iterator() {
         return new DictionaryIterator();
     }
@@ -196,12 +227,6 @@ public class BinarySearchTree<K extends Comparable<? super K>, V> implements
         public void remove() {
             throw new UnsupportedOperationException();
         }
-
-    }
-
-    @Override
-    public void clear() {
-        // TODO Auto-generated method stub
 
     }
 }

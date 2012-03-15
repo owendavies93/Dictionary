@@ -32,6 +32,8 @@ public interface Dictionary<K extends Comparable<? super K>, V> extends
      */
     public boolean isEmpty();
 
+    public DictionaryEntry<K, V> getRoot();
+
     /**
      * Returns the value associated with the key. There can be at most one value
      * associated with each key.

@@ -28,6 +28,11 @@ public class OrderedLinkedList<K extends Comparable<? super K>, V> implements
     }
 
     @Override
+    public OrderedLinkedListEntry<K, V> getRoot() {
+        return head;
+    }
+
+    @Override
     public boolean isEmpty() {
         return size() == 0;
     }

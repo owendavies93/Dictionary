@@ -8,19 +8,14 @@ public class Main {
     private static final int REPITITIONS = 500;
 
     public static void main(String[] args) throws FileNotFoundException {
-        OrderedLinkedList<Integer, String> l =
-                new OrderedLinkedList<Integer, String>();
+        BinarySearchTree<Integer, String> l =
+                new BinarySearchTree<Integer, String>();
 
-        l.put(3, "hello");
-        l.put(1, "hi");
-        l.put(5, "sup");
-        l.put(2, "wow");
-        l.put(6, "does");
-        l.put(10, "this");
-        l.put(12, "work");
-
-        for (DictionaryEntry<Integer, String> e : l) {
-            System.out.println(e);
-        }
+        l.put(4, "hello");
+        l.put(7, "hi");
+        l.put(1, "sup");
+        l.put(2, "fuck");
+        l.put(5, "shit");
+        l.remove(2);
     }
 }

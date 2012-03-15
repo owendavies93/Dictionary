@@ -37,14 +37,15 @@ public abstract class TestDictionary {
     @Test
     public void testIsEmptyFalse() {
         d.put("Tigger", 20);
-        assertFalse("isEmpty() failed for dictionary with one element", d
-                .isEmpty());
+        assertFalse("isEmpty() failed for dictionary with one element",
+                d.isEmpty());
     }
 
     @Test
     public void testSizeWithItems() {
-        List<String> cats = Arrays.asList("Growltiger", "Rum Tum Tugger",
-                "Jellicles", "Mungojerrie", "Rumpelteazer");
+        List<String> cats =
+                Arrays.asList("Growltiger", "Rum Tum Tugger", "Jellicles",
+                        "Mungojerrie", "Rumpelteazer");
         for (String cat : cats) {
             d.put(cat, cat.hashCode());
         }
@@ -63,12 +64,13 @@ public abstract class TestDictionary {
 
     @Test
     public void testListIteratorMany() {
-        List<String> cats = Arrays.asList("practical", "dramatical",
-                "pragmatical", "fanatical", "oratorical", "delphioracle",
-                "skeptical", "dispeptical", "romantical", "pedantical",
-                "critical", "parasitical", "allegorical", "metaphorical",
-                "statistical", "mystical", "political", "hypocritical",
-                "clerical", "hysterical", "cynical", "rabbinical");
+        List<String> cats =
+                Arrays.asList("practical", "dramatical", "pragmatical",
+                        "fanatical", "oratorical", "delphioracle", "skeptical",
+                        "dispeptical", "romantical", "pedantical", "critical",
+                        "parasitical", "allegorical", "metaphorical",
+                        "statistical", "mystical", "political", "hypocritical",
+                        "clerical", "hysterical", "cynical", "rabbinical");
         for (int i = 0; i < cats.size(); i++) {
             d.put(cats.get(i), i);
         }
@@ -80,8 +82,8 @@ public abstract class TestDictionary {
         Iterator<DictionaryEntry<String, Integer>> actual = d.iterator();
 
         while (expected.hasNext()) {
-            assertTrue("Iterator hasNext() failed when expected", expected
-                    .hasNext());
+            assertTrue("Iterator hasNext() failed when expected",
+                    expected.hasNext());
 
             String expectedCat = expected.next();
             DictionaryEntry<String, Integer> actualCat = actual.next();
@@ -109,10 +111,40 @@ public abstract class TestDictionary {
 
         it.next();
     }
-    
-    @Test(expected = UnsupportedOperationException.class) 
+
+    @Test(expected = UnsupportedOperationException.class)
     public void testListIteratorRemoveUnimplemented() {
         d.iterator().remove();
     }
 
+    @Test
+    public void testClear() {
+        d.put("hello", 4);
+        d.put("hi", 6);
+        d.put("testing123", 1);
+        d.clear();
+        assertTrue("clear() failed", d.size() == 0);
+    }
+
+    @Test
+    public void testRemove() {
+        d.put("hello", 10);
+        d.put("hi", 7);
+        d.remove("hello");
+        assertTrue("element not removed on remove()", d.size() == 1);
+        assertTrue("head/root not fixed after remove()",
+                d.getRoot().getKey() == "hi");
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void testDeepRemove() {
+        d.put("hello", 4);
+        d.put("hi", 7);
+        d.put("sup", 1);
+        d.put("testing", 2);
+        d.put("test", 5);
+        d.remove("testing");
+        assertEquals("incorrect element removed", d.get("testing"),
+                new NoSuchElementException("Key not found"));
+    }
 }
