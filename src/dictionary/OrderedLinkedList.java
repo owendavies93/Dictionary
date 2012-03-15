@@ -1,5 +1,6 @@
 package dictionary;
 
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -13,10 +14,12 @@ public class OrderedLinkedList<K extends Comparable<? super K>, V> implements
 
     private OrderedLinkedListEntry<K, V> head;
     private int numElems;
+    private int modCount;
 
     public OrderedLinkedList() {
         this.head = null;
         this.numElems = 0;
+        this.modCount = 0;
     }
 
     @Override
@@ -41,13 +44,17 @@ public class OrderedLinkedList<K extends Comparable<? super K>, V> implements
     }
 
     private OrderedLinkedListEntry<K, V> getEntryAt(K key) {
+        if (size() == 0) {
+            return null;
+        }
+
         OrderedLinkedListEntry<K, V> curr = head;
         int count = 1;
 
-        do {
+        while (count < size() && curr.getKey() != key) {
             curr = curr.getNext();
             count++;
-        } while (curr.getKey() != key && count < size());
+        }
 
         if (count >= size() && curr.getKey() != key) {
             return null;
@@ -59,6 +66,7 @@ public class OrderedLinkedList<K extends Comparable<? super K>, V> implements
     @Override
     public void put(K key, V value) {
         OrderedLinkedListEntry<K, V> prev = findPrev(key);
+        modCount++;
 
         if (prev == null) {
             head = new OrderedLinkedListEntry<K, V>(key, value);
@@ -68,6 +76,7 @@ public class OrderedLinkedList<K extends Comparable<? super K>, V> implements
         } else if (prev.getKey().compareTo(key) < 0) {
             OrderedLinkedListEntry<K, V> entry =
                     new OrderedLinkedListEntry<K, V>(key, value);
+            entry.setNext(prev.getNext());
             prev.setNext(entry);
             numElems++;
         } else {
@@ -104,6 +113,7 @@ public class OrderedLinkedList<K extends Comparable<? super K>, V> implements
             }
 
             numElems--;
+            modCount++;
         } else {
             throw new NoSuchElementException("Key not found");
         }
@@ -115,23 +125,23 @@ public class OrderedLinkedList<K extends Comparable<? super K>, V> implements
 
         while (!isEmpty()) {
             remove(curr.getKey());
+            curr = head;
         }
     }
 
     @Override
     public Iterator<DictionaryEntry<K, V>> iterator() {
-        return new DictionaryIterator<K, V>();
+        return new DictionaryIterator();
     }
 
-    private class DictionaryIterator<K, V> implements
-            Iterator<DictionaryEntry<K, V>> {
+    private class DictionaryIterator implements Iterator<DictionaryEntry<K, V>> {
 
         private OrderedLinkedListEntry<K, V> curr;
+        private int oldModCount;
 
-        @SuppressWarnings("unchecked")
         public DictionaryIterator() {
-            this.curr = (OrderedLinkedListEntry<K, V>) head;
-            // TODO
+            this.curr = head;
+            this.oldModCount = modCount;
         }
 
         @Override
@@ -140,20 +150,30 @@ public class OrderedLinkedList<K extends Comparable<? super K>, V> implements
         }
 
         @Override
-        public DictionaryEntry<K, V> next() {
-            if (curr == null) {
-                return null;
-            } else {
-                DictionaryEntry<K, V> res = curr;
-                curr = curr.getNext();
-                return res;
+        public OrderedLinkedListEntry<K, V> next() {
+            if (oldModCount != modCount) {
+                throw new ConcurrentModificationException();
             }
+
+            OrderedLinkedListEntry<K, V> res = null;
+            if (curr != null) {
+                res = curr;
+                curr = curr.getNext();
+            }
+            return res;
         }
 
         @Override
         public void remove() {
             throw new UnsupportedOperationException();
         }
+    }
 
+    public String toString() {
+        String res = "[";
+        for (DictionaryEntry<K, V> e : this) {
+            res += e + ", ";
+        }
+        return res + "]";
     }
 }
