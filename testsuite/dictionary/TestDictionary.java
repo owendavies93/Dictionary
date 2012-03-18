@@ -147,4 +147,19 @@ public abstract class TestDictionary {
         assertEquals("incorrect element removed", d.get("testing"),
                 new NoSuchElementException("Key not found"));
     }
+
+    @Test(expected = NoSuchElementException.class)
+    public void testDoubleDelete() {
+        d.put("hello", 1);
+        d.remove("hello");
+        d.remove("hello");
+    }
+
+    @Test
+    public void testSizeAfterAddition() {
+        d.put("hello", 3);
+        assertTrue("size did not change to 1", d.size() == 1);
+        d.put("hi", 1);
+        assertTrue("size did not change to 2", d.size() == 2);
+    }
 }
