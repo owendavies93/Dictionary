@@ -37,7 +37,7 @@ public class Main {
 
         int[] bComplexities =
                 iC.getInsertComplexities(
-                        new OrderedLinkedList<InstrumentedKey, Integer>(),
+                        new BinarySearchTree<InstrumentedKey, Integer>(),
                         MAX_SIZE, REPITITIONS);
         pS = new PrintStream(bFile);
         for (int i = 0; i < REPITITIONS; i++) {
